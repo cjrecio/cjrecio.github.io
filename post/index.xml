@@ -14,7 +14,8 @@
       
       <guid>/post/2021/05/09/my-website-blog-post/</guid>
       <description>Hello Everyone this is my first ever blog post in my website! I want to tell you guys that I really enjoyed this class and learned a lot from it. Hope you all have a wonderful day!
-This is one of my favorite cars that I wanted to share with y’all. Hope you guys love it too!</description>
+I learned a lot about python, one thing I learned was to combine lists using python! AS well as choosing as specific character in the list.
+list1 = [1,2,3,4,5] list2 = [1,5,6,7,7] list3= list1 + list2 list3 ## [1, 2, 3, 4, 5, 1, 5, 6, 7, 7] list3[3] ## 4 Here is an example of using reticulate to display the interaction between R and Python!</description>
     </item>
     
   </channel>
