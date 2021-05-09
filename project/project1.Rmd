@@ -1,0 +1,53 @@
+---
+title: 'Project 1: Exploratory Data Analysis'
+author: "Cesar Recio"
+date: "4/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", 
+    warning = F, message = F, tidy = TRUE, tidy.opts = list(width.cutoff = 60), 
+    R.options = list(max.print = 100))
+```
+
+## Exploring Data Between Choosing an NFL team & the political stance you take as a fan of that team
+
+The two datasets that we are going to be exploring takes into account NFL Fandom. For one of the datasets, it takes into account the race and politcal views of fans of particular NFL teams. The other datasets contain variables that factor into how people choose on what their favorite NFL team will be. I thought that it would be interesting if there was correlation in political views of fans of particular teams to the reasons why they choose a team to be their favorite. The data sets were acquired from the "fivethirtyeight" package. 
+```{r include =FALSE}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(fivethirtyeight)
+```
+
+## 1. Tidying: Rearranging Wide/Long
+```{r}
+data("nfl_fandom_surveymonkey")
+data("nfl_fav_team")
+
+nfl_fav_long <- pivot_longer(nfl_fav_team, c(big_market,uniform,coaching,stadium_exp,small_market,afford,stlouis_prox,nyc_prox,fan_relations,bang_buck,tradition,bandwagon,future_wins,players,ownership,behavior), names_to = "Category", values_to = "Weight")
+nfl_fav_long
+
+nfl_politics_long <- pivot_longer(nfl_fandom_surveymonkey, c(total_respondents,asian_dem, black_dem, hispanic_dem,other_dem, white_dem, total_dem, asian_ind, black_ind, hispanic_ind, other_ind, white_ind, total_ind, asian_gop,black_gop, hispanic_gop, other_gop, white_gop, total_gop))
+nfl_politics_long 
+```
+
+
+## 2. Joining/Merging
+
+
+```{r}
+
+nfl_merge <- nfl_fav_long %>% left_join(nfl_politics_long)
+nfl_merge   
+```
+
+## 3 Wrangling
+
+```{r}
+
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

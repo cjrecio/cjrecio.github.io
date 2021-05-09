@@ -1,0 +1,95 @@
+---
+title: "Project 2"
+author: "Cesar Recio"
+date: "5/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,fig.align="center",warning=FALSE,message=FALSE,fig.width=8, fig.height=5, linewidth=60)
+options(tibble.width = 100,width = 100)
+library(tidyverse)
+library(dplyr)
+library(rstatix)
+library(ggplot2)
+CASchools_County <- read_csv("CASchools_County.csv")
+```
+
+## Project 2: Modeling, Testing, Predicting
+
+The dataset that we are going to model and test looks into the test score data and income in California Schools in different counties across California. Some of the variables that we will take into account include County, District Average income(in 1,000 USD), average reading score, average math score, and number of computers. A categorical variable (County) is include with 6 groups, a total of 97 observations for Average reading score in schools in a specific county, a total of 97 observations of Average math score in schools in a specific county, and 97 observations of total number of computers in schools in a county.
+```{r}
+data(CASchools_County)
+CASchools_County %>% count(county)
+CASchools_County %>% select(read,math,income,computer)
+
+```
+
+
+## 1. MANOVA, ANOVA, Post Hoc T Test 
+
+
+```{r}
+CASchool_Man <- manova(cbind(read,math)~county,data = CASchools_County)
+summary(CASchool_Man)
+summary.aov(CASchool_Man)
+
+CASchools_County%>%group_by(county)%>%summarize(mean(read),mean(math))
+
+pairwise.t.test(CASchools_County$read,
+                CASchools_County$county, p.adj="none")
+
+pairwise.t.test(CASchools_County$math,
+                CASchools_County$county, p.adj="none")
+
+```
+##2 Randomization Test
+
+
+```{r}
+set.seed(348)
+
+rand_Cor <- vector()
+
+for(i in 1:5000){
+  cor.test(CASchools_County$income,CASchools_County$english)
+}
+```
+
+
+##3 Linear Regression model 
+
+A liner regression model will be used to predict the interaction with district average income with average math scores and average reading scores. 
+
+```{r}
+fit <- lm(income ~ math + read, data = CASchools_County)
+summary(fit)
+
+```
+We associate an increase of 1 increase (1,000USD) in district income with an increase of 0.02864 in Average math score adjusting for or controlling for Average reading score. We associate an increase of 1 increase (1,000USD) in district income with an increase of 0.31491 in Average reading score adjusting for or controlling for Average math score.
+
+Approxiately 73.98% variation in income can be explained by the model (Average math and Average reading scores).
+
+
+```{r}
+
+library(interactions)
+
+interact_plot(fit, pred = math, modx =read, plot.points = TRUE)
+
+```
+
+

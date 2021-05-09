@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Cesar Recio" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>Project 2</title>
+    <meta name="generator" content="Hugo 0.83.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/project2/">Project 2</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         January 1, 0001 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="project-2-modeling-testing-predicting" class="section level2">
+<h2>Project 2: Modeling, Testing, Predicting</h2>
+<p>The dataset that we are going to model and test looks into the test score data and income in California Schools in different counties across California. Some of the variables that we will take into account include County, District Average income(in 1,000 USD), average reading score, average math score, and number of computers. A categorical variable (County) is include with 6 groups, a total of 97 observations for Average reading score in schools in a specific county, a total of 97 observations of Average math score in schools in a specific county, and 97 observations of total number of computers in schools in a county.</p>
+<pre class="r"><code>data(CASchools_County)
+CASchools_County %&gt;% count(county)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   county            n
+##   &lt;chr&gt;         &lt;int&gt;
+## 1 Los Angeles      27
+## 2 Orange           11
+## 3 Sacramento        7
+## 4 San Diego        21
+## 5 Santa Barbara    11
+## 6 Santa Clara      20</code></pre>
+<pre class="r"><code>CASchools_County %&gt;% select(read,math,income,computer)</code></pre>
+<pre><code>## # A tibble: 97 x 4
+##     read  math income computer
+##    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
+##  1  612.  613.  11.6         0
+##  2  619.  620.   7.02      960
+##  3  620.  629.   6.61      569
+##  4  621.  630.   8.13      721
+##  5  625.  628.  11.3       177
+##  6  630.  629.   7.33      175
+##  7  630.  631.  12.6      1423
+##  8  628.  633.  11.8      1306
+##  9  628.  634.  14.1       786
+## 10  630.  634.  12.3       896
+## # … with 87 more rows</code></pre>
+</div>
+<div id="manova-anova-post-hoc-t-test" class="section level2">
+<h2>1. MANOVA, ANOVA, Post Hoc T Test</h2>
+<pre class="r"><code>CASchool_Man &lt;- manova(cbind(read,math)~county,data = CASchools_County)
+summary(CASchool_Man)</code></pre>
+<pre><code>## Df Pillai approx F num Df den Df Pr(&gt;F)
+## county 5 0.30151 3.2308 10 182 0.0007418 ***
+## Residuals 91
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>summary.aov(CASchool_Man)</code></pre>
+<pre><code>## Response read :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## county 5 8753.8 1750.76 5.214 0.0002969 ***
+## Residuals 91 30556.1 335.78
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response math :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## county 5 8931.8 1786.36 5.5774 0.0001581 ***
+## Residuals 91 29146.0 320.29
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>CASchools_County%&gt;%group_by(county)%&gt;%summarize(mean(read),mean(math))</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   county        `mean(read)` `mean(math)`
+##   &lt;chr&gt;                &lt;dbl&gt;        &lt;dbl&gt;
+## 1 Los Angeles           645.         646.
+## 2 Orange                653.         656.
+## 3 Sacramento            638.         636.
+## 4 San Diego             659.         661.
+## 5 Santa Barbara         667.         667.
+## 6 Santa Clara           665.         665.</code></pre>
+<pre class="r"><code>pairwise.t.test(CASchools_County$read,
+                CASchools_County$county, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: CASchools_County$read and CASchools_County$county
+##
+## Los Angeles Orange Sacramento San Diego Santa Barbara
+## Orange 0.2502 - - - -
+## Sacramento 0.3806 0.1068 - - -
+## San Diego 0.0081 0.3186 0.0092 - -
+## Santa Barbara 0.0014 0.0776 0.0019 0.3002 -
+## Santa Clara 0.0003 0.0673 0.0011 0.3057 0.8609
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(CASchools_County$math,
+                CASchools_County$county, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: CASchools_County$math and CASchools_County$county
+##
+## Los Angeles Orange Sacramento San Diego Santa Barbara
+## Orange 0.12256 - - - -
+## Sacramento 0.19875 0.02441 - - -
+## San Diego 0.00407 0.42204 0.00176 - -
+## Santa Barbara 0.00187 0.17075 0.00071 0.44019 -
+## Santa Clara 0.00048 0.17694 0.00039 0.50193 0.83602
+##
+## P value adjustment method: none</code></pre>
+<p>##2 Randomization Test</p>
+<pre class="r"><code>set.seed(348)
+
+rand_Cor &lt;- vector()
+
+for(i in 1:5000){
+  cor.test(CASchools_County$income,CASchools_County$english)
+}</code></pre>
+<p>##3 Linear Regression model</p>
+<p>A liner regression model will be used to predict the interaction with district average income with average math scores and average reading scores.</p>
+<pre class="r"><code>fit &lt;- lm(income ~ math + read, data = CASchools_County)
+summary(fit)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = income ~ math + read, data =
+CASchools_County)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -8.4741 -2.6964 -0.4326 2.5269 11.9893
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -206.86934 13.99011 -14.787 &lt; 2e-16 ***
+## math 0.02864 0.08163 0.351 0.726480
+## read 0.31491 0.08034 3.920 0.000168 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 4.15 on 94 degrees of freedom
+## Multiple R-squared: 0.7398, Adjusted R-squared: 0.7343
+## F-statistic: 133.6 on 2 and 94 DF, p-value: &lt; 2.2e-16</code></pre>
+<p>We associate an increase of 1 increase (1,000USD) in district income with an increase of 0.02864 in Average math score adjusting for or controlling for Average reading score. We associate an increase of 1 increase (1,000USD) in district income with an increase of 0.31491 in Average reading score adjusting for or controlling for Average math score.</p>
+<p>Approxiately 73.98% variation in income can be explained by the model (Average math and Average reading scores).</p>
+<pre class="r"><code>library(interactions)
+
+interact_plot(fit, pred = math, modx =read, plot.points = TRUE)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
